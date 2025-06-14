@@ -45,8 +45,14 @@ pub(crate) struct NodeState<NodeIdType> {
 /// This holds which node is selected and the open/close
 /// state of the directories.
 #[derive(Clone)]
-#[cfg_attr(feature = "persistence", derive(serde::Serialize, serde::Deserialize))]
-pub struct TreeViewState<NodeIdType> {
+#[cfg_attr(
+    feature = "persistence",
+    derive(serde::Serialize, serde::Deserialize, egui::util::SerializableAny)
+)]
+pub struct TreeViewState<NodeIdType>
+where
+    NodeIdType: 'static + Send + Sync + serde::Serialize + for<'de> serde::Deserialize<'de>,
+{
     /// Id of the node that was selected.
     selected: Vec<NodeIdType>,
     /// The pivot element used for selection.
@@ -365,7 +371,7 @@ impl<NodeIdType: NodeId> TreeViewState<NodeIdType> {
 /// This holds which node is selected and the open/close
 /// state of the directories.
 #[derive(Clone)]
-#[cfg_attr(feature = "persistence", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "persistence", derive(serde::Serialize))]
 pub(crate) struct PartialTreeViewState<'a, NodeIdType> {
     /// Id of the node that was selected.
     selected: &'a Vec<NodeIdType>,
